@@ -6,6 +6,7 @@ from .models import Raffle, Ticket
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     active_raffles = Raffle.objects.filter(is_active=True, end_date__gt=timezone.now())
@@ -40,3 +41,14 @@ class RegisterView(generic.CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('login')
     template_name = 'registration/register.html'
+    
+@login_required
+def user_dashboard(request):
+    user_tickets = Ticket.objects.filter(user=request.user).order_by('-purchase_date')
+    active_tickets = user_tickets.filter(raffle__end_date__gt=timezone.now())
+    ended_tickets = user_tickets.filter(raffle__end_date__lte=timezone.now())
+    
+    return render(request, 'raffles/dashboard.html', {
+        'active_tickets': active_tickets,
+        'ended_tickets': ended_tickets,
+    })

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Raffle Platform{% endblock %}
+
+{% block content %}
+<div class="jumbotron bg-primary text-white p-5 rounded">
+    <h1 class="display-4">Welcome to RafflePlatform</h1>
+    <p class="lead">Your chance to win amazing prizes with just a few clicks.</p>
+    <a href="{% url 'raffles:raffle_list' %}" class="btn btn-light btn-lg">Browse Raffles</a>
+</div>
+
+<h2 class="mt-5 mb-4">Featured Raffles</h2>
+<div class="row">
+    {% for raffle in featured_raffles %}
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            {% if raffle.image %}
+            <img src="{{ raffle.image.url }}" class="card-img-top" alt="{{ raffle.title }}">
+            {% else %}
+            <div class="bg-secondary text-white text-center p-5">No Image</div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ raffle.title }}</h5>
+                <p class="card-text">€{{ raffle.ticket_price }}</p>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ raffle.tickets_sold|floatformat:0 }}%"></div>
+                </div>
+                <p class="small">{{ raffle.tickets_sold }} / {{ raffle.total_tickets }} tickets sold</p>
+                <a href="{% url 'raffles:raffle_detail' raffle.id %}" class="btn btn-primary">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p>No featured raffles available at the moment.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

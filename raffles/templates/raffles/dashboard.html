@@ -1,0 +1,71 @@
+
+\{% extends 'base.html' %}
+
+{% block title %}My Dashboard{% endblock %}
+
+{% block content %}
+<h1>My Dashboard</h1>
+
+<h2 class="mt-4">Active Tickets</h2>
+{% if active_tickets %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Ticket #</th>
+                <th>Raffle</th>
+                <th>Purchase Date</th>
+                <th>End Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticket in active_tickets %}
+            <tr>
+                <td>{{ ticket.ticket_number }}</td>
+                <td>{{ ticket.raffle.title }}</td>
+                <td>{{ ticket.purchase_date }}</td>
+                <td>{{ ticket.raffle.end_date }}</td>
+                <td>
+                    <a href="{% url 'raffles:raffle_detail' ticket.raffle.id %}" class="btn btn-sm btn-primary">View Raffle</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p>You don't have any active tickets.</p>
+{% endif %}
+
+<h2 class="mt-4">Past Tickets</h2>
+{% if ended_tickets %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Ticket #</th>
+                <th>Raffle</th>
+                <th>Purchase Date</th>
+                <th>Result</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticket in ended_tickets %}
+            <tr>
+                <td>{{ ticket.ticket_number }}</td>
+                <td>{{ ticket.raffle.title }}</td>
+                <td>{{ ticket.purchase_date }}</td>
+                <td>
+                    <!-- We'll implement this later when we have winners -->
+                    <span class="badge bg-secondary">Ended</span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p>You don't have any past tickets.</p>
+{% endif %}
+{% endblock %}

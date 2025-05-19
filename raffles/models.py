@@ -12,6 +12,7 @@ class Raffle(models.Model):
     end_date = models.DateTimeField()
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    featured = models.BooleanField(default=False)
     
     def tickets_sold(self):
         return self.ticket_set.count()

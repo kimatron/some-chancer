@@ -1,77 +1,115 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Raffle Platform{% endblock %}</title>
-    
-    <!-- Bootstrap -->
+    <title>{% block title %}Some Chancer{% endblock %}</title>
+    {% load static %}
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Your custom CSS -->
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'raffles:home' %}">RafflePlatform</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'raffles:home' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'raffles:raffle_list' %}">Raffles</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %}
+    <div class="container">
+        <nav class="navbar navbar-expand-lg">
+            <div class="d-flex justify-content-between w-100 align-items-center">
+                <a class="navbar-brand" href="{% url 'raffles:home' %}">Some Chancer</a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Dashboard</a>
+                            <a class="nav-link" href="{% url 'raffles:home' %}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Logout</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Login</a>
+                            <a class="nav-link" href="{% url 'raffles:raffle_list' %}">Raffles</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Register</a>
+                            <a class="nav-link" href="#">How It Works</a>
                         </li>
-                    {% endif %}
-                </ul>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Winners</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </div>
 
-    <main class="container my-4">
+    <!-- SVG Filters for Animations -->
+    <svg class="d-none">
+        <defs>
+            <filter id="squiggle-0">
+                <feTurbulence baseFrequency="0.05" numOctaves="2" result="noise" seed="0"></feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"></feDisplacementMap>
+            </filter>
+            <filter id="squiggle-1">
+                <feTurbulence baseFrequency="0.05" numOctaves="2" result="noise" seed="1"></feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"></feDisplacementMap>
+            </filter>
+            <filter id="squiggle-2">
+                <feTurbulence baseFrequency="0.05" numOctaves="2" result="noise" seed="2"></feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"></feDisplacementMap>
+            </filter>
+            <filter id="squiggle-3">
+                <feTurbulence baseFrequency="0.05" numOctaves="2" result="noise" seed="3"></feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"></feDisplacementMap>
+            </filter>
+            <filter id="squiggle-4">
+                <feTurbulence baseFrequency="0.05" numOctaves="2" result="noise" seed="4"></feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"></feDisplacementMap>
+            </filter>
+        </defs>
+    </svg>
+
+    <main>
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="bg-dark text-white py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>RafflePlatform</h5>
-                    <p>Your chance to win amazing prizes.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p>&copy; 2025 RafflePlatform. All rights reserved.</p>
+    <footer class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h3>Some Chancer</h3>
+                <p>Try your luck today and win big prizes.</p>
+                <p>© 2025 Some Chancer. All rights reserved.</p>
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>Quick Links</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="{% url 'raffles:home' %}">Home</a></li>
+                            <li><a href="{% url 'raffles:raffle_list' %}">Raffles</a></li>
+                            <li><a href="#">How It Works</a></li>
+                            <li><a href="#">Winners</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Legal</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="#">Terms & Conditions</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Responsible Gaming</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Contact</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="mailto:info@somechancer.com">info@somechancer.com</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap and JS -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'js/main.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

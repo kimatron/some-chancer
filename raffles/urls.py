@@ -10,8 +10,8 @@ urlpatterns = [
     path('register/', views.RegisterView.as_view(), name='register'),
     path('dashboard/', views.user_dashboard, name='dashboard'),
     path('raffle/<int:raffle_id>/purchase/', views.purchase_tickets, name='purchase_tickets'),
-path('raffle/<int:raffle_id>/create-checkout-session/', views.create_checkout_session, name='create_checkout_session'),
-path('payment/success/<int:raffle_id>/<int:quantity>/', views.payment_success, name='payment_success'),
-path('raffle/<int:raffle_id>/draw-winner/', views.draw_winner, name='draw_winner'),
-path('webhook/stripe/', views.stripe_webhook, name='stripe_webhook'),
+    path('raffle/<int:raffle_id>/create-checkout-session/', views.create_checkout_session, name='create_checkout_session'),
+    path('payment/success/<int:raffle_id>/<int:quantity>/', views.payment_success, name='payment_success'),
+    path('raffle/<int:raffle_id>/draw-winner/', views.draw_winner, name='draw_winner'),
+    path('webhook/stripe/', views.stripe_webhook, name='stripe_webhook'),
 ]

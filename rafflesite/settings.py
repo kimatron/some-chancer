@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
     'django_q',
+
     
 ]
 
@@ -139,7 +140,7 @@ DATABASES = {
 
 STRIPE_PUBLISHABLE_KEY = 'pk_test_your_test_key'
 STRIPE_SECRET_KEY = 'sk_test_your_test_key'
-
+STRIPE_WEBHOOK_SECRET = 'whsec_your_webhook_secret' 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 

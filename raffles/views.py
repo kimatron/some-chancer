@@ -16,9 +16,12 @@ from django.views.decorators.cache import cache_page
 from django.conf import settings
 import json
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.core.cache import cache
 from django_q.tasks import async_task
+from django.views.decorators.http import require_POST
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 
@@ -235,6 +238,7 @@ def user_dashboard(request):
     })
     
 @csrf_exempt
+@require_POST
 def stripe_webhook(request):
     payload = request.body
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
@@ -254,7 +258,16 @@ def stripe_webhook(request):
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
         
-        # Retrieve the transaction using the session ID
+        # Extract metadata
+        raffle_id = session.get('metadata', {}).get('raffle_id')
+        user_id = session.get('metadata', {}).get('user_id')
+        quantity = session.get('metadata', {}).get('quantity')
+        
+        if not all([raffle_id, user_id, quantity]):
+            # Missing metadata
+            return HttpResponse(status=400)
+        
+        # Retrieve the transaction
         try:
             transaction = Transaction.objects.get(transaction_id=session.id)
             
@@ -263,14 +276,23 @@ def stripe_webhook(request):
             transaction.save()
             
             # Generate tickets
-            for _ in range(transaction.tickets_purchased):
-                Ticket.objects.create(
-                    raffle=transaction.raffle,
-                    user=transaction.user
+            raffle = Raffle.objects.get(id=raffle_id)
+            user = User.objects.get(id=user_id)
+            
+            tickets = []
+            for _ in range(int(quantity)):
+                ticket = Ticket.objects.create(
+                    raffle=raffle,
+                    user=user
                 )
-                
-        except Transaction.DoesNotExist:
-            # Handle the case where transaction is not found
+                tickets.append(ticket)
+            
+            # Send email notification (if email system is set up)
+            # send_ticket_purchase_email(user, raffle, tickets)
+            
+        except (Transaction.DoesNotExist, Raffle.DoesNotExist, User.DoesNotExist) as e:
+            # Log the error
+            print(f"Error processing webhook: {str(e)}")
             return HttpResponse(status=400)
     
     return HttpResponse(status=200)

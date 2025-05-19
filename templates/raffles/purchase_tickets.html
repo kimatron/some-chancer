@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Purchase Tickets - {{ raffle.title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Purchase Tickets for {{ raffle.title }}</h1>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            {% if raffle.image %}
+            <img src="{{ raffle.image.url }}" class="img-fluid rounded" alt="{{ raffle.title }}">
+            {% else %}
+            <div class="bg-secondary text-white text-center p-5 rounded">No Image Available</div>
+            {% endif %}
+            
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Raffle Details</h5>
+                    <p><strong>Price per ticket:</strong> €{{ raffle.ticket_price }}</p>
+                    <p><strong>Total tickets:</strong> {{ raffle.total_tickets }}</p>
+                    <p><strong>Tickets sold:</strong> {{ raffle.tickets_sold }}</p>
+                    <p><strong>Ending on:</strong> {{ raffle.end_date }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Purchase Tickets</div>
+                <div class="card-body">
+                    <form id="payment-form">
+                        <div class="mb-3">
+                            <label for="ticket-quantity" class="form-label">How many tickets would you like?</label>
+                            <input type="number" class="form-control" id="ticket-quantity" name="quantity" min="1" value="1">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Total Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-text">€</span>
+                                <span class="form-control" id="total-price">{{ raffle.ticket_price }}</span>
+                            </div>
+                        </div>
+                        
+                        <button id="checkout-button" class="btn btn-primary w-100">Proceed to Checkout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    // Get Stripe publishable key
+    const stripe = Stripe('{{ stripe_key }}');
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle quantity changes
+        const quantityInput = document.getElementById('ticket-quantity');
+        const totalPrice = document.getElementById('total-price');
+        const ticketPrice = {{ raffle.ticket_price }};
+        
+        quantityInput.addEventListener('input', function() {
+            const quantity = parseInt(this.value) || 0;
+            totalPrice.textContent = (quantity * ticketPrice).toFixed(2);
+        });
+        
+        // Handle checkout button
+        const checkoutButton = document.getElementById('checkout-button');
+        
+        checkoutButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const quantity = parseInt(quantityInput.value);
+            
+            if (isNaN(quantity) || quantity < 1) {
+                alert('Please enter a valid quantity');
+                return;
+            }
+            
+            // Disable the button to prevent multiple clicks
+            this.disabled = true;
+            this.textContent = 'Processing...';
+            
+            // Create checkout session on the server
+            fetch('{% url "raffles:create_checkout_session" raffle.id %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    quantity: quantity
+                })
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(session) {
+                // Redirect to Stripe Checkout
+                return stripe.redirectToCheckout({ sessionId: session.id });
+            })
+            .then(function(result) {
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            })
+            .finally(function() {
+                // Re-enable the button
+                checkoutButton.disabled = false;
+                checkoutButton.textContent = 'Proceed to Checkout';
+            });
+        });
+    });
+</script>
+{% endblock %}

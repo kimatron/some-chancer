@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - Some Chancer{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="title-section">
+                <h2 class="section-title">Register</h2>
+            </div>
+            <div class="subtitle-section">
+                <p class="section-subtitle">Join the chance-takers</p>
+            </div>
+            
+            <div class="position-relative my-5">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 100%" preserveAspectRatio="none" class="vertical-line left" style="height: 100%; position: absolute; top: 0; left: 0;">
+                    <path fill="none" stroke="currentColor" d="M4.42.73c-2.26 26.23.02-6.6 1.2 43.35.23 9.32-2.18 7.94-4.04 16.35a14.65 14.65 0 0 0 0 4.97c.97 7.34 3.34 14.33 3.57 21.8"></path>
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 100%" preserveAspectRatio="none" class="vertical-line right" style="height: 100%; position: absolute; top: 0; right: 0;">
+                    <path fill="none" stroke="currentColor" d="M4.42.73c-2.26 26.23.02-6.6 1.2 43.35.23 9.32-2.18 7.94-4.04 16.35a14.65 14.65 0 0 0 0 4.97c.97 7.34 3.34 14.33 3.57 21.8"></path>
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 266 8" class="top horizontal-line" style="width: 100%; position: absolute; top: 0;">
+                    <path fill="none" stroke="currentColor" d="M.74 5.43c16.62-3.7 7.17-2.5 43.93-.8 17.36.79 15.14-2.9 24.1-2.63 1.21.04 5.55 1.98 7.47 2.14 5.24.42 8.17-.7 13.42-.44"></path>
+                </svg>
+                
+                <div class="card border-0 p-4 my-4">
+                    <div class="card-body">
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            
+                            {% if form.errors %}
+                            <div class="alert alert-danger">
+                                Please correct the errors below.
+                            </div>
+                            {% endif %}
+                            
+                            <div class="mb-4">
+                                <label for="id_username" class="form-label">Username</label>
+                                <input type="text" name="username" id="id_username" class="form-control form-control-lg" required>
+                                {% if form.username.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.username.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="id_email" class="form-label">Email</label>
+                                <input type="email" name="email" id="id_email" class="form-control form-control-lg" required>
+                                {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.email.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="id_password1" class="form-label">Password</label>
+                                <input type="password" name="password1" id="id_password1" class="form-control form-control-lg" required>
+                                {% if form.password1.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.password1.errors }}
+                                </div>
+                                {% endif %}
+                                <div class="form-text">
+                                    Password must be at least 8 characters and not too common.
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="id_password2" class="form-label">Confirm Password</label>
+                                <input type="password" name="password2" id="id_password2" class="form-control form-control-lg" required>
+                                {% if form.password2.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.password2.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    I agree to the <a href="#">Terms and Conditions</a>
+                                </label>
+                            </div>
+                            
+                            <div class="button-outer w-100 mb-3">
+                                <button type="submit" class="button-middle w-100">
+                                    <span class="button-inner">Register</span>
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <p class="mt-4 text-center">
+                            Already have an account? <a href="{% url 'login' %}">Login here</a>
+                        </p>
+                    </div>
+                </div>
+                
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 266 8" class="bottom horizontal-line" style="width: 100%; position: absolute; bottom: 0;">
+                    <path fill="none" stroke="currentColor" d="M.74 5.43c16.62-3.7 7.17-2.5 43.93-.8 17.36.79 15.14-2.9 24.1-2.63 1.21.04 5.55 1.98 7.47 2.14 5.24.42 8.17-.7 13.42-.44"></path>
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

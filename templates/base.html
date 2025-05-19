@@ -7,6 +7,8 @@
     {% load static %}
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bowlby+One+SC&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     {% block extra_css %}{% endblock %}
@@ -30,11 +32,27 @@
                             <a class="nav-link" href="{% url 'raffles:raffle_list' %}">Raffles</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">How It Works</a>
+                            <a class="nav-link" href="{% url 'raffles:winners' %}">Winners</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Winners</a>
+                            <a class="nav-link" href="#how-it-works">How It Works</a>
                         </li>
+                        
+                        {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'raffles:dashboard' %}">My Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'raffles:logout' %}">Logout</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'raffles:login' %}">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'raffles:register' %}">Register</a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
@@ -64,46 +82,72 @@
                 <feTurbulence baseFrequency="0.05" numOctaves="2" result="noise" seed="4"></feTurbulence>
                 <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"></feDisplacementMap>
             </filter>
+            <filter id="squiggle-5">
+                <feTurbulence baseFrequency="0.05" numOctaves="2" result="noise" seed="5"></feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"></feDisplacementMap>
+            </filter>
         </defs>
     </svg>
+
+    <!-- Display messages if any -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
     <main>
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="container">
+    <footer class="container mt-5 pt-5">
         <div class="row">
-            <div class="col-md-4">
-                <h3>Some Chancer</h3>
-                <p>Try your luck today and win big prizes.</p>
+            <div class="col-lg-4 mb-4">
+                <h3 class="mb-3">Some Chancer</h3>
+                <p>Take a chance, win big. We run fair, transparent raffles with amazing prizes.</p>
                 <p>© 2025 Some Chancer. All rights reserved.</p>
             </div>
-            <div class="col-md-8">
-                <div class="row">
-                    <div class="col-md-4">
-                        <h5>Quick Links</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="{% url 'raffles:home' %}">Home</a></li>
-                            <li><a href="{% url 'raffles:raffle_list' %}">Raffles</a></li>
-                            <li><a href="#">How It Works</a></li>
-                            <li><a href="#">Winners</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4">
-                        <h5>Legal</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="#">Terms & Conditions</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Responsible Gaming</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4">
-                        <h5>Contact</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="mailto:info@somechancer.com">info@somechancer.com</a></li>
-                        </ul>
-                    </div>
-                </div>
+            <div class="col-lg-2 col-md-4 mb-4">
+                <h6 class="mb-3">Raffles</h6>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'raffles:raffle_list' %}" class="footer-link">All Raffles</a></li>
+                    <li><a href="{% url 'raffles:winners' %}" class="footer-link">Previous Winners</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-4 mb-4">
+                <h6 class="mb-3">Account</h6>
+                <ul class="list-unstyled">
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'raffles:dashboard' %}" class="footer-link">My Dashboard</a></li>
+                        <li><a href="{% url 'raffles:logout' %}" class="footer-link">Logout</a></li>
+                    {% else %}
+                        <li><a href="{% url 'raffles:login' %}" class="footer-link">Login</a></li>
+                        <li><a href="{% url 'raffles:register' %}" class="footer-link">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-4 mb-4">
+                <h6 class="mb-3">Legal</h6>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="footer-link">Terms of Service</a></li>
+                    <li><a href="#" class="footer-link">Privacy Policy</a></li>
+                    <li><a href="#" class="footer-link">Cookie Policy</a></li>
+                    <li><a href="#" class="footer-link">Responsible Gaming</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 mb-4">
+                <h6 class="mb-3">Connect</h6>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="footer-link">Instagram</a></li>
+                    <li><a href="#" class="footer-link">Twitter</a></li>
+                    <li><a href="#" class="footer-link">Facebook</a></li>
+                    <li><a href="mailto:info@somechancer.com" class="footer-link">Email Us</a></li>
+                </ul>
             </div>
         </div>
     </footer>

@@ -54,6 +54,12 @@ INSTALLED_APPS = [
     'raffles',
     'rest_framework',
     'rest_framework.authtoken',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
     
 ]
 
@@ -63,6 +69,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'csp.middleware.CSPMiddleware',
@@ -88,6 +95,35 @@ TEMPLATES = [
 WSGI_APPLICATION = 'rafflesite.wsgi.application'
 
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+SITE_ID = 1
+
+# AllAuth settings
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+
+# Social providers
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': 'your-client-id',
+            'secret': 'your-secret-key',
+            'key': ''
+        }
+    },
+    'facebook': {
+        'APP': {
+            'client_id': 'your-client-id',
+            'secret': 'your-secret-key',
+            'key': ''
+        }
+    }
+}
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -124,16 +160,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # Cache settings
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-somechancer",
     }
 }
 
-# Cache timeout in seconds (5 minutes)
-CACHE_TIMEOUT = 300
+CACHE_TIMEOUT = 60  # or any value in seconds
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/

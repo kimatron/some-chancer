@@ -185,3 +185,35 @@ def draw_winner(request, raffle_id):
         messages.success(request, "Winner selection will be implemented in Phase 5.")
     
     return redirect('raffles:raffle_detail', raffle_id=raffle.id)
+  
+
+def raffle_list(request):
+    # Use select_related to reduce database queries
+    active_raffles = Raffle.objects.filter(
+        is_active=True, 
+        end_date__gt=timezone.now()
+    ).prefetch_related('ticket_set')
+    
+    ended_raffles = Raffle.objects.filter(
+        end_date__lte=timezone.now()
+    ).prefetch_related('ticket_set').select_related('winner')
+    
+    return render(request, 'raffles/raffle_list.html', {
+        'active_raffles': active_raffles,
+        'ended_raffles': ended_raffles,
+    })
+
+@login_required
+def user_dashboard(request):
+    # Use select_related to reduce database queries
+    user_tickets = Ticket.objects.filter(
+        user=request.user
+    ).select_related('raffle').order_by('-purchase_date')
+    
+    active_tickets = [t for t in user_tickets if t.raffle.end_date > timezone.now()]
+    ended_tickets = [t for t in user_tickets if t.raffle.end_date <= timezone.now()]
+    
+    return render(request, 'raffles/dashboard.html', {
+        'active_tickets': active_tickets,
+        'ended_tickets': ended_tickets,
+    })

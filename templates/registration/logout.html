@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Logout - Some Chancer{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="title-section">
+                <h2 class="section-title">Logout</h2>
+            </div>
+            <div class="subtitle-section">
+                <p class="section-subtitle">Are you sure you want to log out?</p>
+            </div>
+            
+            <div class="position-relative my-5">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 100%" preserveAspectRatio="none" class="vertical-line left" style="height: 100%; position: absolute; top: 0; left: 0;">
+                    <path fill="none" stroke="currentColor" d="M4.42.73c-2.26 26.23.02-6.6 1.2 43.35.23 9.32-2.18 7.94-4.04 16.35a14.65 14.65 0 0 0 0 4.97c.97 7.34 3.34 14.33 3.57 21.8"></path>
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 100%" preserveAspectRatio="none" class="vertical-line right" style="height: 100%; position: absolute; top: 0; right: 0;">
+                    <path fill="none" stroke="currentColor" d="M4.42.73c-2.26 26.23.02-6.6 1.2 43.35.23 9.32-2.18 7.94-4.04 16.35a14.65 14.65 0 0 0 0 4.97c.97 7.34 3.34 14.33 3.57 21.8"></path>
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 266 8" class="top horizontal-line" style="width: 100%; position: absolute; top: 0;">
+                    <path fill="none" stroke="currentColor" d="M.74 5.43c16.62-3.7 7.17-2.5 43.93-.8 17.36.79 15.14-2.9 24.1-2.63 1.21.04 5.55 1.98 7.47 2.14 5.24.42 8.17-.7 13.42-.44"></path>
+                </svg>
+                
+                <div class="card border-0 p-4 my-4">
+                    <div class="card-body text-center">
+                        <h4 class="mb-4">Are you sure you want to log out?</h4>
+                        <p class="mb-4">You'll need to log back in to access your tickets and account details.</p>
+                        
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="d-flex justify-content-center gap-3">
+                                <div class="button-outer">
+                                    <button type="submit" class="button-middle">
+                                        <span class="button-inner">Yes, Log Out</span>
+                                    </button>
+                                </div>
+                                <div class="button-outer">
+                                    <a href="{% url 'raffles:home' %}" class="button-middle">
+                                        <span class="button-inner">Cancel</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 266 8" class="bottom horizontal-line" style="width: 100%; position: absolute; bottom: 0;">
+                    <path fill="none" stroke="currentColor" d="M.74 5.43c16.62-3.7 7.17-2.5 43.93-.8 17.36.79 15.14-2.9 24.1-2.63 1.21.04 5.55 1.98 7.47 2.14 5.24.42 8.17-.7 13.42-.44"></path>
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

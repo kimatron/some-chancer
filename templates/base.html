@@ -43,8 +43,11 @@
                                 <a class="nav-link" href="{% url 'raffles:dashboard' %}">My Dashboard</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'raffles:logout' %}">Logout</a>
-                            </li>
+    <form method="post" action="{% url 'raffles:logout' %}" class="m-0 p-0">
+        {% csrf_token %}
+        <button type="submit" class="nav-link btn btn-link border-0 bg-transparent">Logout</button>
+    </form>
+</li>
                         {% else %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'raffles:login' %}">Login</a>
@@ -124,7 +127,12 @@
                 <ul class="list-unstyled">
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'raffles:dashboard' %}" class="footer-link">My Dashboard</a></li>
-                        <li><a href="{% url 'raffles:logout' %}" class="footer-link">Logout</a></li>
+                        <li>
+    <form method="post" action="{% url 'raffles:logout' %}" class="m-0 p-0">
+        {% csrf_token %}
+        <button type="submit" class="footer-link btn btn-link p-0 border-0 bg-transparent">Logout</button>
+    </form>
+</li>
                     {% else %}
                         <li><a href="{% url 'raffles:login' %}" class="footer-link">Login</a></li>
                         <li><a href="{% url 'raffles:register' %}" class="footer-link">Register</a></li>

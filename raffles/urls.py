@@ -12,4 +12,5 @@ urlpatterns = [
     path('raffle/<int:raffle_id>/purchase/', views.purchase_tickets, name='purchase_tickets'),
 path('raffle/<int:raffle_id>/create-checkout-session/', views.create_checkout_session, name='create_checkout_session'),
 path('payment/success/<int:raffle_id>/<int:quantity>/', views.payment_success, name='payment_success'),
+path('raffle/<int:raffle_id>/draw-winner/', views.draw_winner, name='draw_winner'),
 ]

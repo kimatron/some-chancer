@@ -18,6 +18,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.core.cache import cache
+from django_q.tasks import async_task
 
 
 
@@ -168,6 +169,12 @@ def payment_success(request, raffle_id, quantity):
             user=request.user
         )
         tickets.append(ticket)
+        
+      # Send email with ticket details
+    async_task('raffles.utils.send_ticket_purchase_email', 
+               request.user, 
+               raffle, 
+               tickets)
     
     return render(request, 'raffles/payment_success.html', {
         'raffle': raffle,

@@ -1,7 +1,49 @@
-# raffles/utils.py
 import random
 import hashlib
 import time
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.conf import settings
+
+def send_ticket_purchase_email(user, raffle, tickets):
+    subject = f'Your Tickets for {raffle.title}'
+    html_message = render_to_string('emails/ticket_purchase.html', {
+        'user': user,
+        'raffle': raffle,
+        'tickets': tickets,
+        'site_url': settings.SITE_URL,
+    })
+    plain_message = strip_tags(html_message)
+    
+    send_mail(
+        subject,
+        plain_message,
+        settings.EMAIL_HOST_USER,
+        [user.email],
+        html_message=html_message,
+    )
+
+def send_winner_notification(winner):
+    user = winner.ticket.user
+    raffle = winner.raffle
+    
+    subject = f'Congratulations! You Won {raffle.title}'
+    html_message = render_to_string('emails/winner_notification.html', {
+        'user': user,
+        'raffle': raffle,
+        'ticket': winner.ticket,
+        'site_url': settings.SITE_URL,
+    })
+    plain_message = strip_tags(html_message)
+    
+    send_mail(
+        subject,
+        plain_message,
+        settings.EMAIL_HOST_USER,
+        [user.email],
+        html_message=html_message,
+    )
 
 def select_winner(raffle_id):
     """

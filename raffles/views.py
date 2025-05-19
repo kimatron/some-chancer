@@ -12,8 +12,11 @@ from django.http import JsonResponse
 from django.conf import settings
 from .utils import select_winner 
 from .forms import TicketPurchaseForm
+from django.views.decorators.cache import cache_page
+from django.conf import settings
 
 
+@cache_page(settings.CACHE_TIMEOUT)
 def home(request):
     active_raffles = Raffle.objects.filter(is_active=True, end_date__gt=timezone.now())
     featured_raffles = active_raffles.order_by('?')[:4]  # Random selection
@@ -22,6 +25,7 @@ def home(request):
         'featured_raffles': featured_raffles,
     })
 
+@cache_page(settings.CACHE_TIMEOUT / 2.5)
 def raffle_list(request):
     active_raffles = Raffle.objects.filter(is_active=True, end_date__gt=timezone.now())
     ended_raffles = Raffle.objects.filter(end_date__lte=timezone.now())

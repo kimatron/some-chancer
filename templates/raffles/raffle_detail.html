@@ -1,11 +1,10 @@
-<!-- templates/raffles/raffle_detail.html -->
 {% extends 'base.html' %}
 {% load static %}
 
 {% block title %}{{ raffle.title }} - Raffle Platform{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% comment %} <link rel="stylesheet" href="{% static 'css/style.css' %}"> {% endcomment %}
 {% endblock %}
 
 {% block content %}

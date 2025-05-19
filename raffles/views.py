@@ -3,6 +3,9 @@
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from .models import Raffle, Ticket
+from django.urls import reverse_lazy
+from django.views import generic
+from django.contrib.auth.forms import UserCreationForm
 
 def home(request):
     active_raffles = Raffle.objects.filter(is_active=True, end_date__gt=timezone.now())
@@ -32,3 +35,8 @@ def raffle_detail(request, raffle_id):
         'raffle': raffle,
         'user_tickets': user_tickets,
     })
+    
+class RegisterView(generic.CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy('login')
+    template_name = 'registration/register.html'

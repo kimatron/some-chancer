@@ -1,0 +1,434 @@
+/* static/css/style.css */
+@import url("https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=DM+Mono:wght@500&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --brand-blue: #4876ff;
+  --brand-lime: #d9f154;
+  --brand-navy: #2e3192;
+  --brand-orange: #ff7347;
+  --brand-pink: #f7d0e9;
+  --brand-purple: #692e54;
+  --brand-gray: #fffdf9;
+
+  /*  Fluid Typography  */
+  --step--2: clamp(0.7813rem, 0.7747rem + 0.0326vw, 0.8rem);
+  --step--1: clamp(0.9375rem, 0.9158rem + 0.1087vw, 1rem);
+  --step-0: clamp(1.125rem, 1.0815rem + 0.2174vw, 1.25rem);
+  --step-1: clamp(1.35rem, 1.2761rem + 0.3696vw, 1.5625rem);
+  --step-2: clamp(1.62rem, 1.5041rem + 0.5793vw, 1.9531rem);
+  --step-3: clamp(1.944rem, 1.771rem + 0.8651vw, 2.4414rem);
+  --step-4: clamp(2.3328rem, 2.0827rem + 1.2504vw, 3.0518rem);
+  --step-5: clamp(2.7994rem, 2.4462rem + 1.7658vw, 3.8147rem);
+  --step-6: clamp(3.3592rem, 2.8691rem + 2.4507vw, 4.7684rem);
+}
+
+body {
+  font-family: "DM Mono", monospace;
+  margin: 0;
+  box-sizing: border-box;
+  color: rgb(39, 39, 42);
+  padding: 12px;
+  background-color: var(--brand-gray);
+  background-image: url("/static/images/bg-texture.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+h1, h2, h3 {
+  font-family: "Bowlby One SC", cursive;
+  text-transform: uppercase;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.title-section h2 {
+  opacity: 0;
+  font-size: var(--step-6);
+  text-transform: uppercase;
+  line-height: 1;
+  text-align: center;
+  margin-bottom: 16px;
+  animation: slideInFromLeft 600ms linear forwards;
+  animation-delay: 200ms;
+}
+
+.subtitle-section p {
+  opacity: 0;
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: var(--step-0);
+  animation: slideInFromLeft 600ms linear forwards;
+  animation-delay: 500ms;
+}
+
+.raffle-grid {
+  --min: 225px;
+  --gap: 1.25rem;
+  display: grid;
+  grid-gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--min)), 1fr));
+}
+
+@media (min-width: 768px) {
+  .raffle-card:nth-child(even) {
+    margin-top: 4rem;
+  }
+}
+
+.raffle-card {
+  padding: 1rem 2rem 0 2rem;
+  max-height: 600px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  inline-size: auto;
+  width: 100%;
+  max-width: 18rem;
+  opacity: 0;
+  transform: translateY(50px);
+  animation: slideInFromBottom 0.8s linear forwards;
+}
+
+.raffle-card:nth-child(1) { animation-delay: 0.8s; }
+.raffle-card:nth-child(2) { animation-delay: 1.0s; }
+.raffle-card:nth-child(3) { animation-delay: 1.2s; }
+.raffle-card:nth-child(4) { animation-delay: 1.4s; }
+
+.horizontal-line,
+.vertical-line {
+  stroke-width: 2;
+  transition: opacity 0.3s ease;
+  color: #a8a29e;
+  opacity: .5;
+}
+
+.horizontal-line {
+  margin-left: -8rem;
+  margin-right: -8rem;
+  height: auto;
+  width: calc(100% + 5rem);
+}
+
+.vertical-line {
+  position: absolute;
+  top: 0;
+  height: 100%;
+}
+
+.vertical-line.left {
+  left: 1rem;
+}
+
+.vertical-line.right {
+  right: 1rem;
+}
+
+.raffle-card:hover :is(.horizontal-line, .vertical-line) {
+  opacity: 1;
+}
+
+.raffle-card img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto 16px;
+  width: 58%;
+  transform-origin: top center;
+  transition: transform 500ms linear;
+}
+
+.raffle-card:hover img {
+  transform: scale(1.5);
+}
+
+.title-wrapper {
+  position: relative;
+  height: 50px;
+}
+
+.raffle-title {
+  font-size: var(--step-0);
+  font-weight: bold;
+  margin: 8px 0;
+  position: absolute;
+  inset: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.raffle-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--step-1);
+  margin-bottom: 16px;
+}
+
+.raffle-button-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+.raffle-card:hover .raffle-button-wrapper,
+.raffle-card:focus-within .raffle-button-wrapper {
+  opacity: 1;
+}
+
+.raffle-image-wrapper {
+  overflow: hidden;
+  margin-bottom: -0.25rem;
+  padding-inline: 1rem;
+}
+
+.scribble-svg {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  animation: squiggle 0.5s infinite;
+}
+
+.scribble-path {
+  transform-origin: center;
+  opacity: 0.6;
+  transition: stroke-dashoffset 500ms ease-in;
+  stroke-dasharray: 1700;
+  stroke-dashoffset: 1700;
+}
+
+.raffle-card:hover .scribble-path {
+  stroke-dashoffset: 0;
+}
+
+/* Navigation styles */
+.navbar {
+  font-family: "Bowlby One SC", cursive;
+  padding: 1rem 0;
+  position: relative;
+}
+
+.navbar-brand {
+  font-size: var(--step-2);
+  text-transform: uppercase;
+  position: relative;
+  display: inline-block;
+}
+
+.navbar-brand:after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--brand-orange);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover:after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.nav-link {
+  position: relative;
+  padding: 0.5rem 1rem;
+  margin: 0 0.5rem;
+  font-size: var(--step-0);
+  letter-spacing: 1px;
+}
+
+.nav-link:after {
+  content: "";
+  position: absolute;
+  bottom: 5px;
+  left: 10px;
+  width: calc(100% - 20px);
+  height: 2px;
+  background: var(--brand-orange);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+.nav-link:hover:after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Button styles */
+.button-outer {
+  filter: drop-shadow(0 1px 0 #000) drop-shadow(-1px 0 0 #000)
+    drop-shadow(1px 0 0 #000) drop-shadow(0 -1px 0 #000)
+    drop-shadow(5px 5px 0 #000);
+  transition: filter 0.3s ease-in-out;
+}
+
+.button-outer:hover {
+  filter: drop-shadow(0 1px 0 #000) drop-shadow(-1px 0 0 #000)
+    drop-shadow(1px 0 0 #000) drop-shadow(0 -1px 0 #000)
+    drop-shadow(0px 0px 0 #000);
+}
+
+.button-outer:hover .button-middle {
+  transform: translate(5px, 5px);
+}
+
+.button-outer:hover .button-inner {
+  color: #000;
+  background-position: 50% 100%;
+}
+
+.button-middle {
+  text-decoration: none;
+  transition: transform 0.3s ease-in-out;
+  cursor: pointer;
+  position: relative;
+  border: none;
+  font-family: monospace;
+  font-size: var(--step-0);
+  font-weight: 600;
+  padding: 0;
+}
+
+.button-inner {
+  background: linear-gradient(to bottom, var(--brand-orange) 33%, var(--brand-lime) 66%) 50% 0% / 100% 400% no-repeat;
+  color: #000;
+  padding: 1rem;
+  position: relative;
+  transition: color 0.3s ease-in-out, background-position 0.3s ease-in-out;
+}
+
+.button-inner:before,
+.button-inner:after {
+  content: "";
+  position: absolute;
+  width: 1rem;
+  height: 100%;
+  top: 0;
+  left: calc(100% - 1px);
+  background: inherit;
+  clip-path: polygon(
+    100% 0,
+    74% 28%,
+    100% 29%,
+    100% 70%,
+    84% 78%,
+    100% 100%,
+    0 100%,
+    0 0
+  );
+}
+
+.button-inner:after {
+  left: calc(-1rem + 1px);
+  clip-path: polygon(
+    23% 19%,
+    0 0,
+    100% 0,
+    100% 100%,
+    0 100%,
+    29% 79%,
+    9% 80%,
+    0 33%
+  );
+}
+
+/* Animation keyframes */
+@keyframes squiggle {
+  0% {
+    filter: url("#squiggle-0");
+  }
+  25% {
+    filter: url("#squiggle-1");
+  }
+  50% {
+    filter: url("#squiggle-2");
+  }
+  75% {
+    filter: url("#squiggle-3");
+  }
+  100% {
+    filter: url("#squiggle-4");
+  }
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hero section */
+.hero {
+  position: relative;
+  padding: 5rem 0;
+  overflow: hidden;
+}
+
+.hero-title {
+  font-size: var(--step-5);
+  line-height: 1;
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: slideInFromLeft 600ms linear forwards;
+  animation-delay: 300ms;
+}
+
+.hero-subtitle {
+  font-size: var(--step-1);
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: slideInFromLeft 600ms linear forwards;
+  animation-delay: 600ms;
+}
+
+/* Footer */
+footer {
+  margin-top: 5rem;
+  padding: 3rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--brand-orange), transparent);
+}

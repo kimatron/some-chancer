@@ -1,151 +1,137 @@
+<!-- templates/raffles/raffle_detail.html -->
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ raffle.title }} - Raffle Platform{% endblock %}
-
-{% block extra_css %}
-{% comment %} <link rel="stylesheet" href="{% static 'css/style.css' %}"> {% endcomment %}
-{% endblock %}
+{% block title %}{{ raffle.title }} - Some Chancer{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-6">
-        {% if raffle.image %}
-        <img src="{{ raffle.image.url }}" class="img-fluid rounded" alt="{{ raffle.title }}">
-        {% else %}
-        <div class="bg-secondary text-white text-center p-5 rounded">No Image Available</div>
-        {% endif %}
-    </div>
-    <div class="col-md-6">
-        <h1>{{ raffle.title }}</h1>
-        
-        <div class="d-flex justify-content-between align-items-center my-3">
-            <span class="badge bg-primary fs-5">€{{ raffle.ticket_price }}</span>
-            
-            {% if raffle.end_date > now %}
-            <div>
-                <span class="text-muted">Ends in:</span>
-                <span class="countdown fw-bold" data-end-date="{{ raffle.end_date|date:'c' }}"></span>
-            </div>
-            {% else %}
-            <span class="badge bg-secondary">Ended</span>
-            {% endif %}
-        </div>
-        
-        <div class="progress mb-2">
-            <div class="progress-bar" role="progressbar" style="width: {{ raffle.tickets_sold|floatformat:0 }}%"></div>
-        </div>
-        <p class="text-muted mb-4">{{ raffle.tickets_sold }} of {{ raffle.total_tickets }} tickets sold</p>
-        
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Description</h5>
-                <p class="card-text">{{ raffle.description }}</p>
-            </div>
-        </div>
-        
-        {% if raffle.end_date > now and raffle.is_active %}
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Purchase Tickets</h5>
-                
-                {% if user.is_authenticated %}
-                <form id="purchase-form" method="post" action="{% url 'raffles:create_checkout_session' raffle.id %}">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="ticket-quantity" class="form-label">Number of Tickets</label>
-                        <input type="number" class="form-control" id="ticket-quantity" name="quantity" min="1" max="{{ raffle.total_tickets }}" value="1">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label">Total Price</label>
-                        <div class="input-group">
-                            <span class="input-group-text">€</span>
-                            <span class="form-control" id="total-price">{{ raffle.ticket_price }}</span>
-                            <span id="ticket-price" data-price="{{ raffle.ticket_price }}" hidden></span>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary w-100">Buy Tickets</button>
-                </form>
-                
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="position-relative mb-4">
+                {% if raffle.image %}
+                <img src="{{ raffle.image.url }}" alt="{{ raffle.title }}" class="img-fluid rounded shadow-sm" />
                 {% else %}
-                <p>You need to <a href="{% url 'login' %}">log in</a> to purchase tickets.</p>
+                <div class="bg-secondary text-white d-flex align-items-center justify-content-center rounded shadow-sm" style="height: 300px;">
+                    <span class="display-4">No Image Available</span>
+                </div>
                 {% endif %}
             </div>
-        </div>
-        {% else %}
-        <div class="alert alert-warning">
-            This raffle is no longer available for ticket purchases.
-            
-            {% if winner %}
-            <p class="mt-3 mb-0">
-                <strong>Winner:</strong> Ticket #{{ winner.ticket.ticket_number }} ({{ winner.ticket.user.username }})
-            </p>
-            {% endif %}
-        </div>
-        {% endif %}
-        
-        {% if user.is_authenticated and user_tickets %}
-        <div class="card mt-4">
-            <div class="card-header">Your Tickets</div>
-            <div class="card-body">
-                <div class="row">
-                    {% for ticket in user_tickets %}
-                    <div class="col-md-4 mb-2">
-                        <span class="ticket-number">{{ ticket.ticket_number }}</span>
-                    </div>
-                    {% endfor %}
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Description</h5>
+                    <p class="card-text">{{ raffle.description }}</p>
                 </div>
             </div>
         </div>
-        {% endif %}
-        
-        {% if user.is_staff and raffle.end_date <= now and not winner %}
-        <form method="post" action="{% url 'raffles:draw_winner' raffle.id %}" class="mt-4">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Draw Winner</button>
-        </form>
-        {% endif %}
+
+        <div class="col-md-6">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h1 class="display-4">{{ raffle.title }}</h1>
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-primary fs-6 p-2">€{{ raffle.ticket_price }}</span>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <div class="progress mb-2" style="height: 15px;">
+                    <div class="progress-bar" role="progressbar" style="width: {{ raffle.percentage_sold }}%;" aria-valuenow="{{ raffle.percentage_sold }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span>{{ raffle.tickets_sold }} tickets sold</span>
+                    <span>{{ raffle.total_tickets }} total tickets</span>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Raffle Details</h5>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <strong>Start Date:</strong>
+                            <p>{{ raffle.start_date|date:"F j, Y" }}</p>
+                        </div>
+                        <div class="col-6">
+                            <strong>End Date:</strong>
+                            <p>{{ raffle.end_date|date:"F j, Y" }}</p>
+                        </div>
+                        <div class="col-6">
+                            <strong>Ticket Price:</strong>
+                            <p>€{{ raffle.ticket_price }}</p>
+                        </div>
+                        <div class="col-6">
+                            <strong>Tickets Available:</strong>
+                            <p>{{ raffle.total_tickets|add:"-"|add:raffle.tickets_sold }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if raffle.is_active and raffle.end_date > now %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Purchase Tickets</h5>
+                    <form id="purchase-form" method="post" action="#" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="ticket-quantity" class="form-label">Number of tickets:</label>
+                            <input type="number" class="form-control form-control-lg" id="ticket-quantity" name="quantity" min="1" max="{{ raffle.total_tickets|add:"-"|add:raffle.tickets_sold }}" value="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="total-price" class="form-label">Total Price:</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text">€</span>
+                                <span class="form-control" id="total-price">{{ raffle.ticket_price }}</span>
+                            </div>
+                        </div>
+                        <div class="button-outer w-100">
+                            <button type="submit" class="button-middle w-100">
+                                <span class="button-inner">Buy Tickets</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-warning">
+                <strong>This raffle has ended.</strong>
+                {% if winner %}
+                <p class="mb-0 mt-2">Winner: {{ winner.user.username }} with ticket #{{ winner.ticket_number }}</p>
+                {% else %}
+                <p class="mb-0 mt-2">Winner will be announced soon.</p>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
     </div>
 </div>
-{% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/main.js' %}"></script>
-<script src="https://js.stripe.com/v3/"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const stripe = Stripe('{{ stripe_key }}');
-        const form = document.getElementById('purchase-form');
+        const quantityInput = document.getElementById('ticket-quantity');
+        const totalPrice = document.getElementById('total-price');
+        const ticketPrice = {{ raffle.ticket_price }};
         
+        if (quantityInput && totalPrice) {
+            quantityInput.addEventListener('input', function() {
+                const quantity = parseInt(this.value) || 0;
+                totalPrice.textContent = (quantity * ticketPrice).toFixed(2);
+            });
+        }
+        
+        // Simple form validation for now - can enhance later
+        const form = document.getElementById('purchase-form');
         if (form) {
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
-                
-                const formData = new FormData(form);
-                
-                fetch(form.action, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(function(session) {
-                    return stripe.redirectToCheckout({ sessionId: session.id });
-                })
-                .then(function(result) {
-                    if (result.error) {
-                        alert(result.error.message);
-                    }
-                })
-                .catch(function(error) {
-                    console.error('Error:', error);
-                    alert('An error occurred. Please try again.');
-                });
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Payment system will be implemented in the next phase!');
+                // Later on, this is where we'll integrate Stripe
             });
         }
     });
 </script>
+{% endblock %}
+
 {% endblock %}

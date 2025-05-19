@@ -3,9 +3,21 @@ from .models import Raffle, Ticket
 
 @admin.register(Raffle)
 class RaffleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'ticket_price', 'total_tickets', 'start_date', 'end_date', 'is_active')
+    list_display = ('title', 'ticket_price', 'total_tickets', 'tickets_sold', 'is_active', 'featured', 'end_date')
+    list_filter = ('is_active', 'featured', 'end_date')
     search_fields = ('title', 'description')
-    list_filter = ('is_active', 'start_date', 'end_date')
+    readonly_fields = ('created_at',)
+    fieldsets = (
+        ('Raffle Information', {
+            'fields': ('title', 'description', 'image', 'total_tickets', 'ticket_price')
+        }),
+        ('Status', {
+            'fields': ('is_active', 'featured', 'tickets_sold')
+        }),
+        ('Dates', {
+            'fields': ('start_date', 'end_date', 'created_at')
+        }),
+    )
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):

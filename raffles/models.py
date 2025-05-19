@@ -57,3 +57,13 @@ class Transaction(models.Model):
     
     def __str__(self):
         return f"{self.user.username} - {self.amount} - {self.status}"
+      
+class Winner(models.Model):
+    raffle = models.OneToOneField(Raffle, on_delete=models.CASCADE)
+    ticket = models.OneToOneField(Ticket, on_delete=models.CASCADE)
+    draw_date = models.DateTimeField(auto_now_add=True)
+    is_claimed = models.BooleanField(default=False)
+    claim_date = models.DateTimeField(null=True, blank=True)
+    
+    def __str__(self):
+        return f"Winner of {self.raffle.title}: {self.ticket.user.username}"

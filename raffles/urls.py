@@ -13,4 +13,5 @@ urlpatterns = [
 path('raffle/<int:raffle_id>/create-checkout-session/', views.create_checkout_session, name='create_checkout_session'),
 path('payment/success/<int:raffle_id>/<int:quantity>/', views.payment_success, name='payment_success'),
 path('raffle/<int:raffle_id>/draw-winner/', views.draw_winner, name='draw_winner'),
+path('webhook/stripe/', views.stripe_webhook, name='stripe_webhook'),
 ]

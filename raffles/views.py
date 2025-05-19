@@ -14,6 +14,11 @@ from .utils import select_winner
 from .forms import TicketPurchaseForm
 from django.views.decorators.cache import cache_page
 from django.conf import settings
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+from django.core.cache import cache
+
 
 
 @cache_page(settings.CACHE_TIMEOUT)
@@ -221,3 +226,44 @@ def user_dashboard(request):
         'active_tickets': active_tickets,
         'ended_tickets': ended_tickets,
     })
+    
+@csrf_exempt
+def stripe_webhook(request):
+    payload = request.body
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+    
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
+        )
+    except ValueError as e:
+        # Invalid payload
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        return HttpResponse(status=400)
+    
+    # Handle the event
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        
+        # Retrieve the transaction using the session ID
+        try:
+            transaction = Transaction.objects.get(transaction_id=session.id)
+            
+            # Update transaction status
+            transaction.status = 'completed'
+            transaction.save()
+            
+            # Generate tickets
+            for _ in range(transaction.tickets_purchased):
+                Ticket.objects.create(
+                    raffle=transaction.raffle,
+                    user=transaction.user
+                )
+                
+        except Transaction.DoesNotExist:
+            # Handle the case where transaction is not found
+            return HttpResponse(status=400)
+    
+    return HttpResponse(status=200)
